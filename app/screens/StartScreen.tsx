@@ -2,7 +2,9 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import StartLayout from "../layouts/StartLayout";
 
-const StartScreen = () => {
+import { NavigationProp } from "@react-navigation/native";
+
+const StartScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
   return (
     <View style={styles.container}>
       <StartLayout />
@@ -16,7 +18,10 @@ const StartScreen = () => {
           style={styles.phoneImage}
         />
       </View>
-      <TouchableOpacity style={styles.getStartedButton}>
+      <TouchableOpacity
+        style={styles.getStartedButton}
+        onPress={() => navigation.navigate("Login")}
+      >
         <Text style={styles.getStartedText}>Bắt Đầu</Text>
       </TouchableOpacity>
     </View>
