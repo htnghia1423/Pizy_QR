@@ -5,13 +5,15 @@ import StartScreen from "./app/screens/StartScreen";
 import LoginScreen from "./app/screens/login/LoginScreen";
 import EmailLoginScreen from "./app/screens/login/EmailLoginScreen";
 import SignUpScreen from "./app/screens/login/SignUpScreen";
-import HomeScreen from "app/screens/HomeScreen";
+import HomeScreen from "./app/screens/HomeScreen";
+import TransactionLogScreen from "./app/screens/TransactionLogScreen";
+import ManageWalletScreen from "./app/screens/ManageWalletScreen";
+import ManageQRCodeScreen from "./app/screens/ManageQRCodeScreen";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { FIREBASE_AUTH } from "firebaseConfig";
+import { FIREBASE_AUTH } from "./firebaseConfig";
 import { useEffect } from "react";
 
 const Stack = createStackNavigator();
-
 const InSideStack = createStackNavigator();
 
 function InsideLayout() {
@@ -20,6 +22,21 @@ function InsideLayout() {
       <InSideStack.Screen
         name="Home"
         component={HomeScreen}
+        options={{ headerShown: false }}
+      />
+      <InSideStack.Screen
+        name="TransactionLog"
+        component={TransactionLogScreen}
+        options={{ headerShown: false }}
+      />
+      <InSideStack.Screen
+        name="ManageWallet"
+        component={ManageWalletScreen}
+        options={{ headerShown: false }}
+      />
+      <InSideStack.Screen
+        name="ManageQRCode"
+        component={ManageQRCodeScreen}
         options={{ headerShown: false }}
       />
     </InSideStack.Navigator>
@@ -34,6 +51,7 @@ export default function App() {
       setUser(user);
     });
   }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Start">
