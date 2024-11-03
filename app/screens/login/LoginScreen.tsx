@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   googleButton: {
     width: "90%",
-    borderColor: "#FFA000",
+    borderColor: "#FFB923",
     borderWidth: 1,
     marginBottom: 20,
     paddingVertical: 5,

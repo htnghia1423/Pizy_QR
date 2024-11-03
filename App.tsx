@@ -17,7 +17,11 @@ const InSideStack = createStackNavigator();
 function InsideLayout() {
   return (
     <InSideStack.Navigator>
-      <InSideStack.Screen name="Home" component={HomeScreen} />
+      <InSideStack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
     </InSideStack.Navigator>
   );
 }
@@ -27,7 +31,6 @@ export default function App() {
 
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      console.log("user", user);
       setUser(user);
     });
   }, []);
