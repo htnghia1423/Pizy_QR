@@ -6,6 +6,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import {
   Text,
@@ -13,7 +14,6 @@ import {
   Button,
   Title,
   Paragraph,
-  useTheme,
   Provider as PaperProvider,
   DefaultTheme,
   ActivityIndicator,
@@ -143,6 +143,13 @@ const EmailLoginScreen = ({
                     />
                   }
                 />
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("ForgotPassword")}
+                >
+                  <Paragraph style={styles.signUpText}>
+                    Quên mật khẩu?
+                  </Paragraph>
+                </TouchableOpacity>
 
                 <Button
                   mode="contained"
