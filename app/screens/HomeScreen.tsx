@@ -29,10 +29,6 @@ import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
 import TransactionLogScreen from "./TransactionLogScreen";
 import ManageWalletScreen from "./ManageWalletScreen";
 import ManageQRCodeScreen from "./ManageQRCodeScreen";
-import {
-  GoogleSignin,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
 
 const theme = {
   ...DefaultTheme,
