@@ -20,6 +20,7 @@ import {
   QrCode,
   EyeOff,
   Eye,
+  LogOut,
 } from "lucide-react-native";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { signOut } from "firebase/auth";
@@ -28,6 +29,10 @@ import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
 import TransactionLogScreen from "./TransactionLogScreen";
 import ManageWalletScreen from "./ManageWalletScreen";
 import ManageQRCodeScreen from "./ManageQRCodeScreen";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
 
 const theme = {
   ...DefaultTheme,
@@ -45,22 +50,28 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showBalance, setShowBalance] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(1);
   const [routes] = useState([
     {
       key: "transactionLog",
       title: "Lịch sử",
-      icon: `<ListTodo color={color} size={size} />`,
+      icon: ({ color, size }: { color: string; size: number }) => (
+        <ListTodo color={color} size={size} />
+      ),
     },
     {
       key: "manageWallet",
       title: "Ví tiền",
-      icon: `<Wallet2 color={color} size={size} />`,
+      icon: ({ color, size }: { color: string; size: number }) => (
+        <Wallet2 color={color} size={size} />
+      ),
     },
     {
       key: "manageQRCode",
       title: "Mã QR",
-      icon: `<QrCode color={color} size={size} />`,
+      icon: ({ color, size }: { color: string; size: number }) => (
+        <QrCode color={color} size={size} />
+      ),
     },
   ]);
   const drawerRef = useRef<DrawerLayout>(null);
@@ -96,7 +107,7 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
       />
       <Drawer.Item
         label="Đăng xuất"
-        icon={() => <User color={theme.colors.secondary} size={24} />}
+        icon={() => <LogOut color={theme.colors.secondary} size={24} />}
         onPress={handleLogout}
       />
     </Drawer.Section>
@@ -153,8 +164,19 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
                       </Button>
                     }
                   >
-                    <Menu.Item title="Hồ sơ" />
-                    <Menu.Item onPress={handleLogout} title="Đăng xuất" />
+                    <Menu.Item
+                      title="Hồ sơ"
+                      leadingIcon={() => (
+                        <User color={theme.colors.secondary} />
+                      )}
+                    />
+                    <Menu.Item
+                      onPress={handleLogout}
+                      title="Đăng xuất"
+                      leadingIcon={() => (
+                        <LogOut color={theme.colors.secondary} />
+                      )}
+                    />
                   </Menu>
                 </View>
 
@@ -196,6 +218,7 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
             </Card>
           </View>
 
+          {/* Bottom Navigation */}
           <BottomNavigation
             navigationState={{ index, routes }}
             onIndexChange={setIndex}
@@ -203,7 +226,10 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
             barStyle={{ backgroundColor: "#EFFAF7" }}
             labeled={true}
             shifting={false}
-            theme={{ colors: { primary: theme.colors.primary } }}
+            renderIcon={({ route, color }) =>
+              route.icon({ color: theme.colors.secondary, size: 24 })
+            }
+            activeColor={theme.colors.primary}
           />
 
           {/* Background Circles */}
