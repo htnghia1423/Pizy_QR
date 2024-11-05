@@ -12,6 +12,11 @@ import {
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
+import StartLayout from "app/layouts/StartLayout";
+import ButtonGoback from "app/components/commons/ButtonGoback";
+import bankOptions from "app/constants/bankOptions";
+import { formatCurrency } from "app/utils/formatCurrency";
+import { getBankLabel } from "app/services/getBankName";
 
 const theme = {
   ...DefaultTheme,
@@ -24,12 +29,16 @@ const theme = {
   },
 };
 
+type RootStackParamList = {
+  WalletDetail: { walletId: string };
+};
+
 interface WalletDetailProps {
-  navigation: NavigationProp<any>;
-  route: RouteProp<{ params: { walletId: string } }, "params">;
+  navigation: NavigationProp<RootStackParamList, "WalletDetail">;
+  route: RouteProp<RootStackParamList, "WalletDetail">;
 }
 
-const WalletDetail = ({ navigation, route }: WalletDetailProps) => {
+const WalletDetail: React.FC<WalletDetailProps> = ({ navigation, route }) => {
   const { walletId } = route.params;
   const [wallet, setWallet] = useState<any>(null);
 
@@ -64,25 +73,43 @@ const WalletDetail = ({ navigation, route }: WalletDetailProps) => {
   return (
     <PaperProvider theme={theme}>
       <SafeAreaView style={styles.container}>
+        <StartLayout />
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <ButtonGoback navigation={navigation} />
+          <Title style={styles.title}>Chi tiết ví</Title>
           <Card style={styles.card}>
             <Card.Content>
               <Title style={styles.title}>{wallet.walletName}</Title>
-              <Paragraph>Ngân hàng: {wallet.bankName}</Paragraph>
-              <Paragraph>Số tài khoản: {wallet.accountNumber}</Paragraph>
-              <Paragraph>
-                Số dư: {wallet.balance.toLocaleString()} VNĐ
-              </Paragraph>
-              <Paragraph>
-                Trạng thái: {wallet.status ? "Hoạt động" : "Bị Khoá"}
-              </Paragraph>
+              <Text>
+                <Text style={styles.label}>Ngân hàng: </Text>
+                {getBankLabel(wallet.bankName)}
+              </Text>
+              <Text>
+                <Text style={styles.label}>Số tài khoản: </Text>
+                {wallet.accountNumber}
+              </Text>
+              <Text>
+                <Text style={styles.label}>Số dư: </Text>
+                {formatCurrency(wallet.balance.toString())} VNĐ
+              </Text>
+              <Text>
+                <Text style={styles.label}>Trạng thái: </Text>
+                <Text
+                  style={[
+                    styles.status,
+                    wallet.status ? styles.activeStatus : styles.inactiveStatus,
+                  ]}
+                >
+                  {wallet.status ? "Hoạt động" : "Bị Khoá"}
+                </Text>
+              </Text>
             </Card.Content>
           </Card>
         </ScrollView>
         <View style={styles.buttonContainer}>
           <Button
             mode="contained"
-            onPress={() => navigation.navigate("EditWallet", { walletId })}
+            // onPress={() => navigation.navigate("EditWallet", { walletId })}
             style={styles.button}
           >
             Chỉnh sửa
@@ -117,6 +144,19 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
+    color: theme.colors.primary,
+  },
+  label: {
+    fontWeight: "bold",
+  },
+  status: {
+    fontWeight: "bold",
+  },
+  activeStatus: {
+    color: "#0DB07E",
+  },
+  inactiveStatus: {
+    color: "red",
   },
   buttonContainer: {
     flexDirection: "row",

@@ -13,9 +13,19 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { FIREBASE_AUTH } from "./firebaseConfig";
 import { useEffect } from "react";
 import AddWalletScreen from "app/screens/AddWalletScreen";
+import WalletDetail from "app/screens/WalletDetail";
 
 const Stack = createStackNavigator();
 const InSideStack = createStackNavigator();
+
+type RootStackParamList = {
+  Home: undefined;
+  TransactionLog: undefined;
+  ManageWallet: undefined;
+  ManageQRCode: undefined;
+  AddWallet: undefined;
+  WalletDetail: { walletId: string };
+};
 
 function InsideLayout() {
   return (
@@ -43,6 +53,11 @@ function InsideLayout() {
       <InSideStack.Screen
         name="AddWallet"
         component={AddWalletScreen}
+        options={{ headerShown: false }}
+      />
+      <InSideStack.Screen
+        name="WalletDetail"
+        component={WalletDetail}
         options={{ headerShown: false }}
       />
     </InSideStack.Navigator>

@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import { Wallet } from "app/models/Wallet";
 import { formatCurrency } from "app/utils/formatCurrency";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import bankOptions from "app/constants/bankOptions";
+import { getBankLabel } from "app/services/getBankName";
 
 const ListWallet = () => {
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const navigation = useNavigation<NavigationProp<any>>();
 
   useEffect(() => {
     const fetchWallets = async () => {
@@ -32,23 +42,28 @@ const ListWallet = () => {
   }, []);
 
   const renderItem = ({ item }: { item: Wallet }) => (
-    <View style={styles.item}>
-      <Text style={styles.title}>{item.walletName}</Text>
-      <Text>Ngân hàng: {item.bankName}</Text>
-      <Text>Số tài khoản: {item.accountNumber}</Text>
-      <Text>Số dư: {formatCurrency(item.balance.toString())} VNĐ</Text>
-      <Text>
-        Trạng thái:{" "}
-        <Text
-          style={[
-            styles.status,
-            item.status ? styles.activeStatus : styles.inactiveStatus,
-          ]}
-        >
-          {item.status ? "Hoạt động" : "Bị Khoá"}
+    <TouchableOpacity
+      onPress={() => navigation.navigate("WalletDetail", { walletId: item.id })}
+    >
+      <View style={styles.item}>
+        <Text style={styles.title}>{item.walletName}</Text>
+        <Text>
+          <Text style={styles.label}>Số tài khoản: </Text>
+          {item.accountNumber}
         </Text>
-      </Text>
-    </View>
+        <Text>
+          <Text style={styles.label}>Trạng thái: </Text>
+          <Text
+            style={[
+              styles.status,
+              item.status ? styles.activeStatus : styles.inactiveStatus,
+            ]}
+          >
+            {item.status ? "Hoạt động" : "Bị Khoá"}
+          </Text>
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -85,6 +100,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
+    fontWeight: "bold",
+  },
+  label: {
     fontWeight: "bold",
   },
   status: {

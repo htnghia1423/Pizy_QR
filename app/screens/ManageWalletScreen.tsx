@@ -4,7 +4,7 @@ import ListWallet from "app/components/ListWallet";
 import StartLayout from "app/layouts/StartLayout";
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Title, DefaultTheme } from "react-native-paper";
+import { Title, DefaultTheme, FAB } from "react-native-paper";
 import { Wallet, Wallet2 } from "lucide-react-native";
 
 const theme = {
@@ -34,6 +34,13 @@ const ManageWalletScreen = ({
         </View>
         <ButtonGoback navigation={navigation} />
         <ListWallet />
+        <FAB
+          icon="plus"
+          customSize={60}
+          color="#e0c277"
+          style={styles.addWalletButton}
+          onPress={() => navigation.navigate("AddWallet")}
+        />
       </View>
     </View>
   );
@@ -57,8 +64,15 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
-    fontSize: 32,
+    fontSize: 28,
     marginLeft: 10,
+  },
+  addWalletButton: {
+    zIndex: 1,
+    position: "absolute",
+    bottom: 40,
+    right: 20,
+    backgroundColor: "#08d094",
   },
 });
 
