@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -10,7 +10,9 @@ import {
   MESSAGING_SENDER_ID,
   APP_ID,
   MEASUREMENT_ID,
+  DB_URL,
 } from "@env";
+import { getDatabase } from "@firebase/database";
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -20,9 +22,16 @@ const firebaseConfig = {
   messagingSenderId: MESSAGING_SENDER_ID,
   appId: APP_ID,
   measurementId: MEASUREMENT_ID,
+  databaseURL: DB_URL,
 };
 
-export const FIREBASE_APP = initializeApp(firebaseConfig);
+let FIREBASE_APP;
+if (!getApps().length) {
+  FIREBASE_APP = initializeApp(firebaseConfig);
+} else {
+  FIREBASE_APP = getApp();
+}
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
 export const FIRESTORE_DB = getFirestore(FIREBASE_APP);
+export const FIREBASE_DB = getDatabase(FIREBASE_APP);
 const analytics = getAnalytics(FIREBASE_APP);

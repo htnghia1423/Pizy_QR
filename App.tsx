@@ -12,6 +12,7 @@ import ManageQRCodeScreen from "./app/screens/ManageQRCodeScreen";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { FIREBASE_AUTH } from "./firebaseConfig";
 import { useEffect } from "react";
+import AddWalletScreen from "app/screens/AddWalletScreen";
 
 const Stack = createStackNavigator();
 const InSideStack = createStackNavigator();
@@ -37,6 +38,11 @@ function InsideLayout() {
       <InSideStack.Screen
         name="ManageQRCode"
         component={ManageQRCodeScreen}
+        options={{ headerShown: false }}
+      />
+      <InSideStack.Screen
+        name="AddWallet"
+        component={AddWalletScreen}
         options={{ headerShown: false }}
       />
     </InSideStack.Navigator>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, StyleSheet, SafeAreaView } from "react-native";
 import {
   Button,
@@ -11,6 +11,7 @@ import {
   Menu,
   Drawer,
   BottomNavigation,
+  FAB,
 } from "react-native-paper";
 import {
   User,
@@ -22,13 +23,14 @@ import {
   Eye,
   LogOut,
 } from "lucide-react-native";
-import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
 import { signOut } from "firebase/auth";
 import { NavigationProp } from "@react-navigation/native";
 import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
-import TransactionLogScreen from "./TransactionLogScreen";
-import ManageWalletScreen from "./ManageWalletScreen";
-import ManageQRCodeScreen from "./ManageQRCodeScreen";
+import ListTransaction from "app/components/ListTransaction";
+import ListWallet from "app/components/ListWallet";
+import ListQR from "app/components/ListQR";
+import { onValue, ref } from "@firebase/database";
 
 const theme = {
   ...DefaultTheme,
@@ -47,6 +49,35 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
   const [showBalance, setShowBalance] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
   const [index, setIndex] = useState(1);
+  const [totalBalance, setTotalBalance] = useState(0);
+
+  useEffect(() => {
+    const fetchWallets = async () => {
+      const user = FIREBASE_AUTH.currentUser;
+      if (!user) {
+        console.log("User not logged in");
+        return;
+      }
+
+      const walletRef = ref(FIREBASE_DB, `wallets`);
+      onValue(walletRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const userWallets = Object.keys(data)
+            .map((key) => ({ id: key, ...data[key] }))
+            .filter((wallet) => wallet.uid === user.uid);
+          const total = userWallets.reduce(
+            (sum, wallet) => sum + wallet.balance,
+            0
+          );
+          setTotalBalance(total);
+        }
+      });
+    };
+
+    fetchWallets();
+  }, []);
+
   const [routes] = useState([
     {
       key: "transactionLog",
@@ -89,17 +120,17 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
       <Drawer.Item
         label="Lịch sử giao dịch"
         icon={() => <ListTodo color={theme.colors.secondary} size={24} />}
-        onPress={() => {}}
+        onPress={() => navigation.navigate("TransactionLog")}
       />
       <Drawer.Item
         label="Quản lý ví tiền"
         icon={() => <Wallet2 color={theme.colors.secondary} size={24} />}
-        onPress={() => {}}
+        onPress={() => navigation.navigate("ManageWallet")}
       />
       <Drawer.Item
         label="Quản lý mã QR"
         icon={() => <QrCode color={theme.colors.secondary} size={24} />}
-        onPress={() => {}}
+        onPress={() => navigation.navigate("ManageQRCode")}
       />
       <Drawer.Item
         label="Đăng xuất"
@@ -110,9 +141,9 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
   );
 
   const renderScene = BottomNavigation.SceneMap({
-    transactionLog: TransactionLogScreen,
-    manageWallet: ManageWalletScreen,
-    manageQRCode: ManageQRCodeScreen,
+    transactionLog: ListTransaction,
+    manageWallet: ListWallet,
+    manageQRCode: ListQR,
   });
 
   return (
@@ -192,7 +223,9 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
                 <View style={styles.balanceCard}>
                   <View style={styles.balanceHeader}>
                     <Title style={styles.balanceAmount}>
-                      {showBalance ? "999,999 VND" : "******"}
+                      {!showBalance
+                        ? `${totalBalance.toLocaleString()} VND`
+                        : "******"}
                     </Title>
                     <Button
                       icon={() =>
@@ -212,7 +245,22 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
                 </View>
               </Card.Content>
             </Card>
+            <View style={styles.managementContainer}>
+              <Title style={styles.managementTitle}>
+                Quản lý thông tin chung
+              </Title>
+            </View>
           </View>
+
+          {index === 1 && (
+            <FAB
+              icon="plus"
+              customSize={60}
+              color="#e0c277"
+              style={styles.addWalletButton}
+              onPress={() => navigation.navigate("AddWallet")}
+            />
+          )}
 
           {/* Bottom Navigation */}
           <BottomNavigation
@@ -221,16 +269,18 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
             renderScene={renderScene}
             barStyle={{ backgroundColor: "#EFFAF7" }}
             labeled={true}
-            shifting={false}
-            renderIcon={({ route, color }) =>
+            shifting={true}
+            renderIcon={({ route }) =>
               route.icon({ color: theme.colors.secondary, size: 24 })
             }
             activeColor={theme.colors.primary}
           />
 
           {/* Background Circles */}
-          <View style={[styles.circle, styles.topCircle]} />
+          <View style={[styles.circle, styles.leftCircle]} />
+          <View style={[styles.circle, styles.rightCircle]} />
           <View style={[styles.circle, styles.bottomCircle]} />
+          <View style={[styles.circle, styles.topCircle]} />
         </SafeAreaView>
       </DrawerLayout>
     </PaperProvider>
@@ -249,13 +299,21 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "#0DB07E66",
   },
-  topCircle: {
+  leftCircle: {
     top: 350,
     left: -150,
   },
-  bottomCircle: {
+  rightCircle: {
     top: 450,
     right: -150,
+  },
+  bottomCircle: {
+    bottom: -100,
+    left: -350,
+  },
+  topCircle: {
+    top: -120,
+    left: -190,
   },
   content: {
     flex: 1,
@@ -264,7 +322,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#EFFAF7",
     paddingTop: 20,
     borderRadius: 16,
-    marginBottom: 32,
     elevation: 2,
     width: "100%",
     marginHorizontal: 0,
@@ -293,7 +350,7 @@ const styles = StyleSheet.create({
     padding: 24,
     borderRadius: 16,
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 20,
     elevation: 2,
   },
   balanceHeader: {
@@ -335,6 +392,23 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderRadius: 16,
     alignSelf: "center",
+  },
+  addWalletButton: {
+    zIndex: 1,
+    position: "absolute",
+    bottom: 100,
+    right: 20,
+    backgroundColor: "#08d094",
+  },
+  managementContainer: {
+    marginTop: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  managementTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#0DB07E",
   },
 });
 

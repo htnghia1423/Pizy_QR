@@ -24,6 +24,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { NavigationProp } from "@react-navigation/native";
 import { ArrowLeft } from "lucide-react-native";
 import StartLayout from "../../layouts/StartLayout";
+import ButtonGoback from "app/components/commons/ButtonGoback";
 
 const theme = {
   ...DefaultTheme,
@@ -105,16 +106,7 @@ const SignUpScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.content}>
-              <Button
-                icon={() => (
-                  <ArrowLeft size={24} color={theme.colors.primary} />
-                )}
-                style={styles.backButton}
-                contentStyle={styles.backButtonContent}
-                onPress={() => navigation.goBack()}
-              >
-                Quay Lại
-              </Button>
+              <ButtonGoback navigation={navigation} />
 
               <Title style={styles.title}>Đăng ký</Title>
 
@@ -221,14 +213,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 24,
     paddingTop: 10,
-  },
-  backButton: {
-    height: 40,
-    justifyContent: "center",
-    alignItems: "flex-start",
-  },
-  backButtonContent: {
-    height: 40,
   },
   title: {
     fontSize: 30,

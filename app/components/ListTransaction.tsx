@@ -1,11 +1,10 @@
-import ListQR from "app/components/ListQR";
-import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import React from "react";
 
-const ManageQRCodeScreen = () => {
+const ListTransaction = () => {
   return (
     <View style={styles.container}>
-      <ListQR />
+      <Text>ListTransaction</Text>
     </View>
   );
 };
@@ -19,4 +18,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ManageQRCodeScreen;
+export default ListTransaction;

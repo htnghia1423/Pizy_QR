@@ -1,10 +1,12 @@
+import ListTransaction from "app/components/ListTransaction";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { List } from "react-native-paper";
 
 const TransactionLogScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Transaction Log Screen</Text>
+      <ListTransaction />
     </View>
   );
 };
@@ -14,6 +16,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#FFFEFA",
   },
 });
 

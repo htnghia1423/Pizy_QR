@@ -7,4 +7,5 @@ declare module "@env" {
   export const APP_ID: string;
   export const MEASUREMENT_ID: string;
   export const WEB_CLIENT_ID: string;
+  export const DB_URL: string;
 }
