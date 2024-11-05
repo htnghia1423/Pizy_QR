@@ -4,42 +4,9 @@ import { Button } from "react-native-paper";
 import StartLayout from "../../layouts/StartLayout";
 import { FontAwesome } from "@expo/vector-icons";
 import { NavigationProp } from "@react-navigation/native";
-import {
-  GoogleSignin,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
-import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
-import { FIREBASE_AUTH } from "../../../firebaseConfig";
-
-GoogleSignin.configure({
-  scopes: ["email"],
-  webClientId: process.env.WEB_CLIENT_ID,
-  offlineAccess: true,
-});
 
 const LoginScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
-  const SignIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      const idToken = (userInfo as any).idToken;
-      const googleCredential = GoogleAuthProvider.credential(idToken);
-      await signInWithCredential(FIREBASE_AUTH, googleCredential);
-      console.log("User signed in with Google:", userInfo);
-    } catch (error) {
-      if ((error as any).code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log("User cancelled the login flow");
-      } else if ((error as any).code === statusCodes.IN_PROGRESS) {
-        console.log("Sign in is in progress");
-      } else if (
-        (error as any).code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE
-      ) {
-        console.log("Play services not available or outdated");
-      } else {
-        console.log("Something went wrong", error);
-      }
-    }
-  };
+  const SignIn = async () => {};
 
   return (
     <View style={styles.container}>
