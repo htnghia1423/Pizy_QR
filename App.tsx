@@ -28,7 +28,7 @@ type RootStackParamList = {
   ManageQRCode: undefined;
   AddWallet: undefined;
   WalletDetail: { walletId: string };
-  QRDetail: { walletId: string }; // Thêm QRDetail vào RootStackParamList
+  QRDetail: { walletId: string };
 };
 
 function InsideLayout() {
@@ -106,7 +106,7 @@ export default function App() {
   }, []);
 
   if (loading) {
-    return null; // Hoặc một màn hình loading
+    return null;
   }
 
   return (
