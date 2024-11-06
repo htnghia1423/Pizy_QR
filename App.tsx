@@ -16,7 +16,6 @@ import AddWalletScreen from "app/screens/wallet/AddWalletScreen";
 import WalletDetail from "app/screens/wallet/WalletDetail";
 import AddQRScreen from "app/screens/qrCode/AddQRScreen";
 import QRDetail from "app/screens/qrCode/QRDetail";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 const InSideStack = createStackNavigator();
@@ -80,34 +79,12 @@ function InsideLayout() {
 
 export default function App() {
   const [user, setUser] = React.useState<User | null>(null);
-  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
-    const checkUser = async () => {
-      const storedUser = await AsyncStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
-      setLoading(false);
-    };
-
-    checkUser();
-
-    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, async (user) => {
-      if (user) {
-        await AsyncStorage.setItem("user", JSON.stringify(user));
-      } else {
-        await AsyncStorage.removeItem("user");
-      }
+    onAuthStateChanged(FIREBASE_AUTH, (user) => {
       setUser(user);
     });
-
-    return () => unsubscribe();
   }, []);
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <NavigationContainer>
