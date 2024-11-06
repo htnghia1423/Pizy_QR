@@ -23,7 +23,7 @@ import {
   Eye,
   LogOut,
 } from "lucide-react-native";
-import { FIREBASE_AUTH, FIREBASE_DB } from "../../firebaseConfig";
+import { FIREBASE_AUTH, FIREBASE_DB } from "../../../firebaseConfig";
 import { signOut } from "firebase/auth";
 import { NavigationProp } from "@react-navigation/native";
 import DrawerLayout from "react-native-gesture-handler/DrawerLayout";
@@ -224,7 +224,7 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
                   <View style={styles.balanceHeader}>
                     <Title style={styles.balanceAmount}>
                       {!showBalance
-                        ? `${totalBalance.toLocaleString()} VND`
+                        ? `${totalBalance.toLocaleString()} VNĐ`
                         : "******"}
                     </Title>
                     <Button
@@ -259,6 +259,16 @@ const HomeScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
               color="#e0c277"
               style={styles.addWalletButton}
               onPress={() => navigation.navigate("AddWallet")}
+            />
+          )}
+
+          {index === 2 && (
+            <FAB
+              icon="plus"
+              customSize={60}
+              color="#e0c277"
+              style={styles.addWalletButton}
+              onPress={() => navigation.navigate("AddQR")}
             />
           )}
 

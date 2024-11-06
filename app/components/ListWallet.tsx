@@ -9,10 +9,7 @@ import {
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import { Wallet } from "app/models/Wallet";
-import { formatCurrency } from "app/utils/formatCurrency";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import bankOptions from "app/constants/bankOptions";
-import { getBankLabel } from "app/services/getBankName";
 
 const ListWallet = () => {
   const [wallets, setWallets] = useState<Wallet[]>([]);

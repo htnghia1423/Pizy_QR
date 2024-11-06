@@ -4,6 +4,7 @@ export interface Wallet {
   bankName: string;
   accountNumber: string;
   balance: number;
+  qrCodeUrl: string;
   status: boolean;
   uid: string;
 }

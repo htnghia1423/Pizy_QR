@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import WalletForm from "../components/FormAddWallet";
+import WalletForm from "../../components/FormAddWallet";
 import StartLayout from "app/layouts/StartLayout";
 
 import { NavigationProp, useNavigation } from "@react-navigation/native";

@@ -9,7 +9,7 @@ import {
   Provider as PaperProvider,
   DefaultTheme,
 } from "react-native-paper";
-import { FIREBASE_DB, FIREBASE_AUTH } from "../../firebaseConfig";
+import { FIREBASE_DB, FIREBASE_AUTH } from "../../../firebaseConfig";
 import { ref, onValue } from "firebase/database";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import StartLayout from "app/layouts/StartLayout";

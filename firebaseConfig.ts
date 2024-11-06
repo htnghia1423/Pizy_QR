@@ -13,6 +13,7 @@ import {
   DB_URL,
 } from "@env";
 import { getDatabase } from "@firebase/database";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -34,4 +35,5 @@ if (!getApps().length) {
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
 export const FIRESTORE_DB = getFirestore(FIREBASE_APP);
 export const FIREBASE_DB = getDatabase(FIREBASE_APP);
+export const FIREBASE_STORAGE = getStorage(FIREBASE_APP);
 const analytics = getAnalytics(FIREBASE_APP);

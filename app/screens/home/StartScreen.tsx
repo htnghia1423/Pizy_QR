@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import StartLayout from "../layouts/StartLayout";
+import StartLayout from "../../layouts/StartLayout";
 
 import { NavigationProp } from "@react-navigation/native";
 
@@ -9,12 +9,12 @@ const StartScreen = ({ navigation }: { navigation: NavigationProp<any> }) => {
     <View style={styles.container}>
       <StartLayout />
       <Image
-        source={require("../../assets/logo_Pizy.png")}
+        source={require("../../../assets/logo_Pizy.png")}
         style={styles.logo}
       />
       <View style={styles.illustrationContainer}>
         <Image
-          source={require("../../assets/start_image.png")}
+          source={require("../../../assets/start_image.png")}
           style={styles.phoneImage}
         />
       </View>

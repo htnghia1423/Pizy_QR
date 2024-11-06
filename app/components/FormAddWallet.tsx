@@ -111,6 +111,7 @@ const WalletForm = ({ navigation }: { navigation: NavigationProp<any> }) => {
       accountNumber,
       walletName,
       balance: Number(balance.replace(/,/g, "")),
+      qrCodeUrl: "",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       status: true,

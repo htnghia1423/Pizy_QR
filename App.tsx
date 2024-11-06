@@ -1,19 +1,22 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import StartScreen from "./app/screens/StartScreen";
+import StartScreen from "./app/screens/home/StartScreen";
 import LoginScreen from "./app/screens/login/LoginScreen";
 import EmailLoginScreen from "./app/screens/login/EmailLoginScreen";
 import SignUpScreen from "./app/screens/login/SignUpScreen";
-import HomeScreen from "./app/screens/HomeScreen";
+import HomeScreen from "./app/screens/home/HomeScreen";
 import TransactionLogScreen from "./app/screens/TransactionLogScreen";
-import ManageWalletScreen from "./app/screens/ManageWalletScreen";
-import ManageQRCodeScreen from "./app/screens/ManageQRCodeScreen";
+import ManageWalletScreen from "./app/screens/wallet/ManageWalletScreen";
+import ManageQRCodeScreen from "./app/screens/qrCode/ManageQRCodeScreen";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { FIREBASE_AUTH } from "./firebaseConfig";
 import { useEffect } from "react";
-import AddWalletScreen from "app/screens/AddWalletScreen";
-import WalletDetail from "app/screens/WalletDetail";
+import AddWalletScreen from "app/screens/wallet/AddWalletScreen";
+import WalletDetail from "app/screens/wallet/WalletDetail";
+import AddQRScreen from "app/screens/qrCode/AddQRScreen";
+import QRDetail from "app/screens/qrCode/QRDetail";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 const InSideStack = createStackNavigator();
@@ -25,6 +28,7 @@ type RootStackParamList = {
   ManageQRCode: undefined;
   AddWallet: undefined;
   WalletDetail: { walletId: string };
+  QRDetail: { walletId: string }; // Thêm QRDetail vào RootStackParamList
 };
 
 function InsideLayout() {
@@ -60,18 +64,50 @@ function InsideLayout() {
         component={WalletDetail}
         options={{ headerShown: false }}
       />
+      <InSideStack.Screen
+        name="AddQR"
+        component={AddQRScreen}
+        options={{ headerShown: false }}
+      />
+      <InSideStack.Screen
+        name="QRDetail"
+        component={QRDetail}
+        options={{ headerShown: false }}
+      />
     </InSideStack.Navigator>
   );
 }
 
 export default function App() {
   const [user, setUser] = React.useState<User | null>(null);
+  const [loading, setLoading] = React.useState(true);
 
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
+    const checkUser = async () => {
+      const storedUser = await AsyncStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+      setLoading(false);
+    };
+
+    checkUser();
+
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, async (user) => {
+      if (user) {
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+      } else {
+        await AsyncStorage.removeItem("user");
+      }
       setUser(user);
     });
+
+    return () => unsubscribe();
   }, []);
+
+  if (loading) {
+    return null; // Hoặc một màn hình loading
+  }
 
   return (
     <NavigationContainer>
