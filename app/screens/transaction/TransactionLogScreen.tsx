@@ -1,11 +1,11 @@
 import { NavigationProp } from "@react-navigation/native";
 import ButtonGoback from "app/components/commons/ButtonGoback";
-import ListQR from "app/components/ListQR";
+import ListTransaction from "app/components/ListTransaction";
 import StartLayout from "app/layouts/StartLayout";
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Title, DefaultTheme, FAB } from "react-native-paper";
-import { QrCode } from "lucide-react-native";
+import { Title, DefaultTheme } from "react-native-paper";
+import { DollarSign } from "lucide-react-native";
 
 const theme = {
   ...DefaultTheme,
@@ -19,7 +19,7 @@ const theme = {
   },
 };
 
-const ManageQRCodeScreen = ({
+const TransactionLogScreen = ({
   navigation,
 }: {
   navigation: NavigationProp<any>;
@@ -29,18 +29,11 @@ const ManageQRCodeScreen = ({
       <StartLayout />
       <View style={styles.content}>
         <View style={styles.titleContainer}>
-          <QrCode color={theme.colors.secondary} size={40} />
-          <Title style={styles.title}>Quản lý mã QR</Title>
+          <DollarSign color={theme.colors.secondary} size={40} />
+          <Title style={styles.title}>Lịch sử giao dịch</Title>
         </View>
         <ButtonGoback navigation={navigation} />
-        <ListQR />
-        <FAB
-          icon="plus"
-          customSize={60}
-          color="#e0c277"
-          style={styles.addQRButton}
-          onPress={() => navigation.navigate("AddQR")}
-        />
+        <ListTransaction />
       </View>
     </View>
   );
@@ -67,7 +60,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginLeft: 10,
   },
-  addQRButton: {
+  addTransactionButton: {
     zIndex: 1,
     position: "absolute",
     bottom: 40,
@@ -76,4 +69,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ManageQRCodeScreen;
+export default TransactionLogScreen;

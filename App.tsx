@@ -6,7 +6,7 @@ import LoginScreen from "./app/screens/login/LoginScreen";
 import EmailLoginScreen from "./app/screens/login/EmailLoginScreen";
 import SignUpScreen from "./app/screens/login/SignUpScreen";
 import HomeScreen from "./app/screens/home/HomeScreen";
-import TransactionLogScreen from "./app/screens/TransactionLogScreen";
+import TransactionLogScreen from "./app/screens/transaction/TransactionLogScreen";
 import ManageWalletScreen from "./app/screens/wallet/ManageWalletScreen";
 import ManageQRCodeScreen from "./app/screens/qrCode/ManageQRCodeScreen";
 import { onAuthStateChanged, User } from "firebase/auth";
@@ -16,6 +16,7 @@ import AddWalletScreen from "app/screens/wallet/AddWalletScreen";
 import WalletDetail from "app/screens/wallet/WalletDetail";
 import AddQRScreen from "app/screens/qrCode/AddQRScreen";
 import QRDetail from "app/screens/qrCode/QRDetail";
+import TransactionDetail from "app/screens/transaction/TransactionDetail";
 
 const Stack = createStackNavigator();
 const InSideStack = createStackNavigator();
@@ -71,6 +72,11 @@ function InsideLayout() {
       <InSideStack.Screen
         name="QRDetail"
         component={QRDetail}
+        options={{ headerShown: false }}
+      />
+      <InSideStack.Screen
+        name="TransactionDetail"
+        component={TransactionDetail}
         options={{ headerShown: false }}
       />
     </InSideStack.Navigator>

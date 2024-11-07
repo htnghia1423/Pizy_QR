@@ -17,6 +17,7 @@
     "expo": "~51.0.28",
     "expo-image-picker": "^15.0.7",
     "expo-notifications": "^0.28.19",
+    "expo-speech": "^12.0.2",
     "expo-status-bar": "~1.12.1",
     "firebase": "^11.0.1",
     "lucide-react-native": "^0.454.0",

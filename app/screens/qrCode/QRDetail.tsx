@@ -16,12 +16,15 @@ import {
   DefaultTheme,
 } from "react-native-paper";
 import { FIREBASE_DB, FIREBASE_AUTH } from "../../../firebaseConfig";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, push, update, get } from "firebase/database";
 import { NavigationProp, RouteProp } from "@react-navigation/native";
 import StartLayout from "app/layouts/StartLayout";
 import ButtonGoback from "app/components/commons/ButtonGoback";
 import { getBankLabel } from "app/services/getBankName";
 import * as Notifications from "expo-notifications";
+import * as Speech from "expo-speech";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { transactionDataList } from "app/data/transactionData";
 
 const theme = {
   ...DefaultTheme,
@@ -69,6 +72,17 @@ const QRDetail: React.FC<QRDetailProps> = ({ navigation, route }) => {
   }, [walletId]);
 
   useEffect(() => {
+    const loadListeningState = async () => {
+      const savedState = await AsyncStorage.getItem("isListening");
+      if (savedState !== null) {
+        setIsListening(JSON.parse(savedState));
+      }
+    };
+
+    loadListeningState();
+  }, []);
+
+  useEffect(() => {
     const subscription = Notifications.addNotificationReceivedListener(
       (notification) => {
         if (isListening) {
@@ -80,8 +94,41 @@ const QRDetail: React.FC<QRDetailProps> = ({ navigation, route }) => {
     return () => subscription.remove();
   }, [isListening]);
 
-  const toggleListening = () => {
-    setIsListening(!isListening);
+  const handleTransaction = async () => {
+    const transactionData = transactionDataList[0];
+
+    const transactionRef = ref(FIREBASE_DB, "transactions");
+    await push(transactionRef, transactionData);
+
+    const walletRef = ref(FIREBASE_DB, `wallets/${transactionData.walletId}`);
+    const snapshot = await get(walletRef);
+    const walletData = snapshot.val();
+    if (walletData) {
+      const newBalance = walletData.balance + transactionData.amount;
+      await update(walletRef, { balance: newBalance });
+    }
+  };
+
+  const handleTransactionSync = () => {
+    handleTransaction().catch((error) => {
+      console.error("Transaction failed: ", error);
+    });
+  };
+
+  const toggleListening = async () => {
+    const newListeningState = !isListening;
+    setIsListening(newListeningState);
+    await AsyncStorage.setItem(
+      "isListening",
+      JSON.stringify(newListeningState)
+    );
+    if (newListeningState) {
+      setTimeout(() => {
+        Speech.speak("Đã nhận được tiền", {
+          onDone: handleTransactionSync,
+        });
+      }, 30000);
+    }
   };
 
   if (!wallet) {
@@ -139,8 +186,8 @@ const QRDetail: React.FC<QRDetailProps> = ({ navigation, route }) => {
             style={[styles.button, isListening && styles.buttonActive]}
           >
             {isListening
-              ? "Tắt chế độ chuyển khoản"
-              : "Bắt đầu chế độ nhận chuyển khoản"}
+              ? "Tắt chế độ thông báo"
+              : "Bắt đầu chế độ thông báo chuyển khoản"}
           </Button>
         </ScrollView>
       </SafeAreaView>
